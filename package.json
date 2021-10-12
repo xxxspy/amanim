@@ -1,0 +1,32 @@
+{
+    "name": "amanim",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack",
+        "watch": "webpack --watch",
+        "dev": "webpack-dev-server"
+    },
+    "author": "mlln.cn",
+    "license": "MIT",
+    "dependencies": {},
+    "devDependencies": {
+        "@babel/core": "^7.15.5",
+        "@babel/plugin-transform-runtime": "^7.15.0",
+        "@babel/polyfill": "^7.12.1",
+        "@babel/preset-env": "^7.15.6",
+        "babel-loader": "^8.2.2",
+        "babel-plugin-named-params": "^0.9.16",
+        "babel-runtime-named-params": "^0.9.19",
+        "copy-webpack-plugin": "^9.0.1",
+        "css-loader": "^6.2.0",
+        "html-webpack-plugin": "^5.3.2",
+        "style-loader": "^3.2.1",
+        "webpack": "^5.52.0",
+        "webpack-cli": "^4.8.0",
+        "webpack-dev-middleware": "^5.0.0",
+        "webpack-dev-server": "^4.1.0"
+    }
+}
