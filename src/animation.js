@@ -266,7 +266,7 @@ export class Animation {
                 }else{
                     setTimeout(()=>{
                         this.captionDiv.removeClass('animate__flipInX')
-                    }, 1.2 + 0.211 * caption.length)
+                    }, 1000*(1.2 + 0.211 * caption.length))
                 }
             }
         }, offset)
