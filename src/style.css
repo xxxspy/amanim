@@ -339,3 +339,7 @@ body {
 .a-enter-vr-button{
     display: none;
 }
+.mjx-math, .MJXc-display, .mjx-chtml{
+    color: white!important;
+    font-size: 128px;
+}

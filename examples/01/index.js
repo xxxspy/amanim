@@ -264,6 +264,8 @@ function constructStage1(){
             animation__clearFormula="property:ellipsecurve.end;to:0.000001;autoplay:false"
         ></a-entity>
     `))
+
+    console.log('::::::::::::::complete stage 1::::::::::::::::::::::')
 }
 
 
@@ -416,170 +418,165 @@ function constructStage2(){
         animation__hideAllPoints="property:scale;from:1.5 1.5 0;to:0 0 0;autoplay:false;"
     ></a-image>
     `))
+    console.log('::::::::::::::complete stage 2::::::::::::::::::::::')
+
 }
 
 
 function animations(){
-    anim.addCaption('大家好,我是DataSense,今天我们研究一下回归', 'sounds/example01/大家好,我是DataSense,今天我们研究一下回归.mp3')
+    // anim.addCaption('大家好,我是DataSense,今天我们研究一下回归', 'sounds/example01/大家好,我是DataSense,今天我们研究一下回归.mp3')
     anim.showEnding()
-    anim.addCaption('假设我们知道什么是直角坐标系', 'sounds/example01/假设我们知道什么是直角坐标系.mp3')
+    anim.addCaption('假设我们知道什么是直角坐标系')
     anim.addAnimation('showX')
     anim.addAnimation('showY', '-=2000')
-    anim.addCaption('横坐标表示身高，纵坐标表示体重', 'sounds/example01/横坐标表示身高，纵坐标表示体重.mp3', '-=500')
+    anim.addCaption('横坐标表示身高，纵坐标表示体重', '-=500')
     anim.addAnimation('showheight')
     anim.addAnimation('showtizhong', '-=1500')
-    anim.addCaption('比如一个人的身高和体重就可以表示为一个点',  'sounds/example01/比如一个人的身高和体重就可以表示为一个点.mp3', '+=500')
+    anim.addCaption('比如一个人的身高和体重就可以表示为一个点',  '+=500')
     anim.addAnimation('show_apoint')
-    anim.addCaption('身高就是点到Y轴的距离', 'sounds/example01/身高就是点到Y轴的距离.mp3', '+=1500')
+    anim.addCaption('身高就是点到Y轴的距离', '+=1500')
     anim.addAnimation('showxdis')
-    anim.addCaption('体重就是点到X轴的距离', 'sounds/example01/体重就是点到X轴的距离.mp3', '+=800')
+    anim.addCaption('体重就是点到X轴的距离', '+=800')
     anim.addAnimation('showydis')
     anim.addAnimation('hidedis', '+=1000')
-    anim.addCaption('如果知道两个人的信息', 'sounds/example01/如果知道两个人的信息.mp3', '+=1000')
+    anim.addCaption('如果知道两个人的信息', '+=1000')
     anim.addAnimation('show_bpoint')
-    anim.addCaption('就可以利用两点确定一条直线', 'sounds/example01/就可以利用两点确定一条直线.mp3', '+=1000')
+    anim.addCaption('就可以利用两点确定一条直线', '+=1000')
     anim.addAnimation('showFitLine')
-    anim.addCaption('这条直线代表身高和体重的关系,比如某人的身高是h', 'sounds/example01/这条直线代表身高和体重的关系,比如某人的身高是h.mp3', '+=2000')
+    anim.addCaption('这条直线代表身高和体重的关系,比如某人的身高是h', '+=2000')
     anim.addAnimation('showH')
-    anim.addCaption('从x轴上找到h这一点做垂线，两条线的交叉点的纵坐标就是这个人的体重', 'sounds/example01/从x轴上找到h这一点做垂线，两条线的交叉点的纵坐标就是这个人的体重.mp3', '+=3000')
+    anim.addCaption('从x轴上找到h这一点做垂线，两条线的交叉点的纵坐标就是这个人的体重', '+=3000')
     anim.addAnimation('showcpointLineX')
     anim.addAnimation('showCPoint')
     anim.addAnimation('showcpointLineY')
     anim.addCaption(
             '所以任意的身高都能找到对应的体重值,可以说这条直线代表了身高和体重的关系,叫做回归线',
-            'sounds/example01/所以任意的身高都能找到对应的体重值,可以说这条直线代表了身高和体重的关系,叫做回归线.mp3',
             '+=1000'
     )
     anim.addAnimation('moveH1')
     anim.addAnimation('moveH2', '-=3000')
-    anim.addCaption('回归分析就是为了找到自变量和因变量的关系(口误:不一定是线性)', 'sounds/example01/回归分析就是为了找到自变量和因变量的线性关系.mp3', '+=5000')
+    anim.addCaption('回归分析就是为了找到自变量和因变量的关系（口误不一定是线性）', '+=5000')
     anim.addAnimation('moveH3')
     anim.addAnimation('moveH4', '-=3000')
-    anim.addCaption('这种关系可以用一个等式表示,叫做回归方程', 'sounds/example01/这种关系可以用一个等式表示,叫做回归方程.mp3', '+=2000')
+    anim.addCaption('这种关系可以用一个等式表示,叫做回归方程', '+=2000')
     anim.addAnimation('showFormula')
-    anim.addCaption('b0表示截距, 就是直线和y轴的交点的纵坐标', 'sounds/example01/b0表示截距, 就是直线和y轴的交点的纵坐标.mp3', '+=3500')
+    anim.addCaption('b0表示截距, 就是直线和y轴的交点的纵坐标', '+=3500')
     anim.addAnimation('extendFitLine')
     anim.addAnimation('showB0')
-    anim.addCaption('b1表示斜率, 就是直线和x轴夹角的正切值,也叫自变量的系数', 'sounds/example01/b1表示斜率, 就是直线和x轴夹角的正切值,也叫自变量的系数.mp3', '+=3000')
+    anim.addCaption('b1表示斜率, 就是直线和x轴夹角的正切值,也叫自变量的系数', '+=3000')
     anim.addAnimation('showB1')
     anim.addAnimation('drawCurve')
     anim.addAnimation('showB1Formula')
     anim.addCaption(
         '回归分析中你经常看到这样的表格,常量就是截距b0,从第二行开始就是自变量系数',
-        'sounds/example01/回归分析中你经常看到这样的表格,常量就是截距b0,从第二行开始就是自变量系数.mp3',
         '+=3000'
     )
     anim.showImg('imgs/example01/coeffs.png', '30%', '50%', 10000)
     anim.hideImg('imgs/example01/coeffs.png')
-    anim.addCaption('到此,我们介绍了回归线的一些属性', 'sounds/example01/到此,我们介绍了回归线的一些属性.mp3', '+=2000')
+    anim.addCaption('到此,我们介绍了回归线的一些属性', '+=2000')
     anim.addAnimation('clearFormula')
-    anim.addCaption('但是要知道,目前的回归线是基于两个人的数据求得的', 'sounds/example01/但是要知道,目前的回归线是基于两个人的数据求得的.mp3', '+=2000')
+    anim.addCaption('但是要知道,目前的回归线是基于两个人的数据求得的', '+=2000')
     anim.addAnimation('largerPointA')
     anim.addAnimation('largerPointB')
     anim.addCaption('这种数据得到的结论不具有代表性,并且你的结论是不稳定的,因为两个人的数据很容易发生剧烈变化', 
-    'sounds/example01/这种数据得到的结论不具有代表性,并且你的结论是不稳定的,因为两个人的数据很容易发生剧烈变化.mp3', 
     '+=4000')
     anim.addAnimation('moveFitLine')
     anim.addAnimation('moveFitLineY')
     anim.addCaption('比如你从班级里随机挑选一个男生,他的身高可能是1.8米,也可能是1.7米', 
-    'sounds/example01/比如你从班级里随机挑选一个男生,他的身高可能是1.8米,也可能是1.7米.mp3', 
     '+=8000')
     anim.showImg('imgs/example01/height.jpg', '30%', '30%', 7000)
     anim.hideImg('imgs/example01/height.jpg',)
     anim.addCaption('但是一个班级的平均身高基本上都在1.7左右,换一个班级平均身高也不会变化很大', 
-    'sounds/example01/但是一个班级的平均身高基本上都在1.7左右,换一个班级平均身高也不会变化很大.mp3', 
     '+=3000')
     anim.showImg('imgs/example01/heights.jpeg', '30%', '30%', 7000)
     anim.hideImg('imgs/example01/heights.jpeg',)
-    anim.addCaption('统计学家们不会这么愚蠢','sounds/example01/统计学家们不会这么愚蠢.mp3', '+=2000')
+    anim.addCaption('统计学家们不会这么愚蠢', '+=2000')
     anim.addAnimation('clearStag1a')
     anim.addAnimation('clearStag1b')
-    anim.addCaption('他们通常会采集大量的数据','sounds/example01/他们通常会采集大量的数据.mp3', '+=1000')
+    anim.addCaption('他们通常会采集大量的数据','+=1000')
     anim.addAnimation('showps')
     anim.addAnimation('hideyFormula', '-=1000')
-    anim.addCaption('然后通过复杂的算法找到一条最优的直线','sounds/example01/然后通过复杂的算法找到一条最优的直线.mp3', '+=1000')
+    anim.addCaption('然后通过复杂的算法找到一条最优的直线', '+=1000')
     anim.addAnimation('drawFitLine')
-    anim.addCaption('数据点通常很难落到这条线上','sounds/example01/数据点通常很难落到这条线上.mp3', '+=500')
+    anim.addCaption('数据点通常很难落到这条线上', '+=500')
     anim.addAnimation('drawErr')
     anim.addCaption('那么点到线上距离就是残差, 注意这个距离不是点到直线的垂直距离',
-    'sounds/example01/那么点到线上距离就是残差, 注意这个距离不是点到直线的垂直距离.mp3', '+=2000')
+         '+=2000')
     anim.addAnimation('showErrorDistance')
     anim.addCaption('是因变量的估计值和真实值之间的差距, 而估计值就是通过回归方程计算得到的',
-    'sounds/example01/是因变量的估计值和真实值之间的差距, 而估计值就是通过回归方程计算得到的.mp3', '+=5000')
+        '+=5000')
     anim.addAnimation('showErrFormula')
     anim.addAnimation('yHatFormula')
     anim.addCaption(
         '所有的残差的平方和就是回归方程拟合好坏的指标',
-        'sounds/example01/所有的残差的平方和就是回归方程拟合好坏的指标.mp3', 
         '+=7000')
     anim.addAnimation('ssrFormula')
     anim.addCaption(
         '残差平方和的最小值就是0, 所有数据点落在回归直线上',
-        'sounds/example01/残差平方和的最小值就是0, 所有数据点落在回归直线上.mp3', 
         '+=5000')
     anim.addAnimation('ssr0points', '+=2000')
     anim.addCaption('真实数据中, 残差平方和不可能为0',
-    'sounds/example01/真实数据中, 残差平方和不可能为0.mp3', '+=4000')
+         '+=4000')
     anim.addAnimation('ssr1points', '+=2000')
     anim.addCaption('通过最小二乘法可以找到最优的方程, 使得残差平方和最小',
-        'sounds/example01/通过最小二乘法可以找到最优的方程, 使得残差平方和最小.mp3', 
         '+=3000')
     anim.addAnimation('moveFitLine1')
     anim.addAnimation('moveFitLine2', '-=3000')
     anim.addCaption('为了比较不同的回归方程拟合的好坏, 我们引入R方统计量', 
-        'sounds/example01/为了比较不同的回归方程拟合的好坏, 我们引入R方统计量.mp3', '+=3000')
+        '+=3000')
     anim.addAnimation('showR2')
     anim.addCaption('首先假定有一个基线方程, 自变量对因变量没有影响, 也就是斜率为0', 
-    'sounds/example01/首先假定有一个基线方程, 自变量对因变量没有影响, 也就是斜率为0.mp3', '+=4000')
+        '+=4000')
     anim.addAnimation('zeroSlop')
     anim.addCaption('截距变为因变量的平均值, 因为平均值的SSR最小', 
-    'sounds/example01/截距变为因变量的平均值, 因为平均值的SSR最小.mp3', '+=6000')
+        '+=6000')
     anim.addAnimation('meanIntercept')
     anim.addCaption('这个时候SSR退化为因变量的方差', 
-    'sounds/example01/这个时候SSR退化为因变量的方差.mp3', '+=3000')
+        '+=3000')
     anim.addAnimation('showVar')
     anim.addCaption('我们还会假定一个理想模型,也就是回归线是完美的,所有数据点都落在回归线上', 
-    'sounds/example01/我们还会假定一个理想模型,也就是回归线是完美的,所有数据点都落在回归线上.mp3', '+=4000')
+        '+=4000')
     anim.addAnimation('normSlop')
     anim.addAnimation('normIntercept', '-=1000')
     anim.addAnimation('ssr0points', '+=2000')
 
     anim.addCaption('这时候因变量的方差就是可以被回归解释的方差', 
-    'sounds/example01/这时候因变量的方差就是可以被回归解释的方差.mp3', '+=7000')
+         '+=7000')
     anim.addAnimation('zeroSlop',)
     anim.addAnimation('meanIntercept', '-=3000')
     anim.addAnimation('ssrHatShow', '+=2000')
     anim.addAnimation('ssr1points', '+=2000')
     
-    anim.addCaption('实际上R平方就是这两个方差的比值', 'sounds/example01/实际上R平方就是这两个方差的比值.mp3','+=1000')
+    anim.addCaption('实际上R平方就是这两个方差的比值',  '+=1000')
     anim.addAnimation('showR22')
 
     anim.addCaption('但是R方为多少才能证明你的回归结果比较好?没有固定的标准', 
-    'sounds/example01/但是R方为多少才能证明你的回归结果比较好 没有固定的标准.mp3', '+=2000')
+        '+=2000')
     anim.addAnimation('r2standard')
     anim.addCaption('在心理学的某些研究中R方在百分之十左右就很常见', 
-    'sounds/example01/在心理学的某些研究中R方在百分之十左右就很常见.mp3','+=5000')
+        '+=5000')
     anim.addAnimation('psy')
     anim.addCaption('在经济学的某些研究中R方在百分之三十左右才比较好', 
-    'sounds/example01/在经济学的某些研究中R方在百分之三十左右才比较好.mp3','+=5000')
+        '+=5000')
     anim.addAnimation('eco')
     anim.addCaption('因此不要只根据R方来判断你的研究的优劣,尤其是一些问卷数据误差很大的时候', 
-    'sounds/example01/因此不要只根据R方来判断你的研究的优劣,尤其是一些问卷数据误差很大的时候.mp3','+=5000')
+        '+=5000')
     anim.addAnimation('questionaire')
     anim.addCaption('这个视频只介绍了1个自变量的回归分析,然而大部分情况下我们有多个自变量', 
-    'sounds/example01/这个视频只介绍了1个自变量的回归分析,然而大部分情况下我们有多个自变量.mp3','+=7000')
+        '+=7000')
     anim.addAnimation('multivar', '+=3000')
     anim.addCaption('因此我们在接下来的视频中会讨论多个自变量的情况', 
-    'sounds/example01/因此我们在接下来的视频中会讨论多个自变量的情况.mp3','+=3000')
+        '+=3000')
     anim.addAnimation('hideAllPoints')
     anim.addAnimation('showZ')
     anim.addAnimation('rotoZ', '-=3000')
-    anim.addCaption('以及各种中介和调节模型', 'sounds/example01/以及各种中介和调节模型.mp3', '+=4000')
+    anim.addCaption('以及各种中介和调节模型', '+=4000')
     anim.showImg('imgs/example01/modmed.png', '30%', '10%', 3000)
     anim.hideImg('imgs/example01/modmed.png')
-    anim.addCaption('希望大家点赞和关注', 'sounds/example01/希望大家点赞和关注.mp3', '+=3000')
+    anim.addCaption('希望大家点赞和关注','+=3000')
     anim.showEnding()
     anim.addAnimation('move_apoint')
+    console.log('::::::::::::animation:::::::::::::::end::::::')
 }
 
 window.renderLatex = ()=>{

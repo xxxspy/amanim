@@ -48,10 +48,14 @@ export class Animation {
     constructor({
         backgroudMusic=null,
         speed=1,
+        soundDirName='sounds',
+        homeDirName='01',
     }){
         this.backgroudMusic = backgroudMusic
         this.speed = speed
         this.soundIndex = -1
+        this.soundDirName = soundDirName
+        this.homeDirName = homeDirName
     }
 
     construct(conFunc, animationsFunc){
@@ -66,7 +70,7 @@ export class Animation {
                     setTimeout(()=>{
                         animationsFunc()
                         this.seekbarContainer.show()
-                    }, 1000)
+                    }, 3000)
                 })
             })
         })
@@ -182,11 +186,11 @@ export class Animation {
                 eval(`runAt${offset}*${this.speed}`)
             }else{runAt=offset}
         }
-        console.log('find elements:' + els.length)
         els.each((i, e)=>{
-            console.log({e, i, coms: e.components.length,})
             let component = e.components[animationName]
-            console.log({component, animationName, })
+            if(component==undefined){
+                console.error('not find animation:' + animationName)
+            }
             component.updateConfig();
             component.stopRelatedAnimations();
             config = cloneConfig(component.config);
@@ -195,7 +199,6 @@ export class Animation {
                 config.duration = config.duration*this.speed
             }
             durs.push(config.duration)
-            console.log({config, offset})
             if(els.length>1){
                 this.timeline.add(config, runAt)
             }else{
@@ -232,24 +235,17 @@ export class Animation {
 
     }
 
-    addCaption(caption, audiofile=null, offset=undefined, duration=200){
+    addCaption(caption, offset=undefined, duration=200){
         let sound = undefined;
         let soundID = undefined;
-        if(audiofile){
-            // sound = new Howl({
-            //     src:[audiofile, ], 
-            //     html5: true, 
-            //     preload: true})
-            // this.sounds.push(sound)
+        let src = `${this.homeDirName}/${this.soundDirName}/${caption}.mp3`
+        let audioAss = $(`[src="${src}"]`)
+        if(audioAss.length>0){
             this.soundIndex += 1
-            //
             let id = `s-${this.soundIndex}`
             soundID = `s${id}`
-            $('#assets').append(`<audio id="${id}" src="${audiofile}" preload="auto"></audio>`)
-            //
+            audioAss.attr('id', id)
             $('#scene').append(`<a-entity id="${soundID}" sound="src: #${id};poolSize:3;"></a-entity>`)
-            
-
         }
         this.timeline.add({
             duration: duration,
@@ -268,10 +264,9 @@ export class Animation {
                     sound.playSound()
                     console.warn('playing:'+soundID)
                 }else{
-                    console.log('set timeout')
                     setTimeout(()=>{
                         this.captionDiv.removeClass('animate__flipInX')
-                    }, duration)
+                    }, 1.2 + 0.211 * caption.length)
                 }
             }
         }, offset)
