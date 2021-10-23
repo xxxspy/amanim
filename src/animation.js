@@ -1,6 +1,7 @@
 
 import './style.css'
-import {checkElement, checkVariable} from './utils'
+import {checkElement, checkVariable, checkAnimation, captionDuration} from './utils'
+
 
 
 // window.MathJax.Hub.Config({
@@ -67,10 +68,53 @@ export class Animation {
             }
             checkElement(selector).then(()=>{
                 checkVariable('MathjaxReady').then(()=>{
+                    animationsFunc()
                     setTimeout(()=>{
-                        animationsFunc()
-                        this.seekbarContainer.show()
-                    }, 3000)
+                        let animPros = [];
+                        this.animData.forEach(an=>{
+                            if(an.type=='caption'){
+                                
+                            }else if(an.type == 'animation'){
+                                animPros.push(checkAnimation(`animation__${an.name}`))
+                            }else if((an.type == 'eventAnimation') && (an.name!=undefined)){
+                                animPros.push(checkAnimation(`animation__${an.name}`))
+                            }else if(an.type=='eventAnimations'){
+                                an.events.forEach(en=>{
+                                    animPros.push(checkAnimation(`animation__${en.anmName}`))
+                                })
+                            }
+                        })
+                        Promise.all(animPros).then(()=>{
+                            this.animData.forEach(an=>{
+                                if(an.type=='caption'){
+                                    this.doAddCaption(an.caption, an.offset, an.duration)
+                                }else if(an.type == 'animation'){
+                                    this.doAddAnimation(an.name, an.offset)
+                                }else if(an.type == 'eventAnimation'){
+                                    this.doAddEventAnimation(an.selectors, an.eventName, an.duration)
+                                }else if(an.type == 'eventAnimations'){
+                                    this.timeline.add({
+                                        changeBegin: ()=>{
+                                            an.events.forEach(en=>{
+                                                $(en.selectors).each((i, e)=>{
+                                                    e.emit(en.startEvents)
+                                                })
+                                            })
+                                        },
+                                        duration: an.duration || 500,
+                                    })
+                                }else if(an.type == 'changeBegin'){
+                                    this.timeline.add({
+                                        changeBegin: an.func,
+                                        duration: an.duration || 500,
+                                    })
+                                }
+                            })
+                            this.seekbarContainer.show()
+                        })
+                        
+                        
+                    }, 1000)
                 })
             })
         })
@@ -104,7 +148,7 @@ export class Animation {
         });
 
         if(backgroudMusic){
-            this.scene.append(`<a-entity id="bgm" sound="src: ${backgroudMusic};volume:0.6;loop:true; autoplay: false"></a-entity>`)
+            this.scene.append(`<a-entity id="bgm" sound="src: ${backgroudMusic};volume:0.6;loop:true; autoplay:false;positional:false;"></a-entity>`)
 
 
             this.bgmEntity = $('#bgm')
@@ -141,7 +185,8 @@ export class Animation {
 
     
     createCaption(){
-        this.captionDiv = $('#caption')
+        this.captionDiv = $('<div id="caption" class="caption animate__animated animate__rotateOut"></div>')
+        $('body').append(this.captionDiv)
         this.sounds = []
     }
 
@@ -173,8 +218,53 @@ export class Animation {
         return $('#camera')
     };
 
-
     addAnimation(name, offset=undefined){
+        if(this.animData==undefined){
+            this.animData = []
+        }
+        this.animData.push({
+            name, offset, type: 'animation'
+        })
+    };
+
+    addEventAnimation(selectors, eventName, duration=undefined, name=undefined){
+        if(duration==undefined){
+            duration = this.previousCaptionDuration()
+            if(duration==-1){
+                duration = 1000
+            }
+        }
+        if(this.animData==undefined){
+            this.animData = []
+        }
+        this.animData.push({
+            type: 'eventAnimation',
+            eventName,
+            selectors,
+            duration,
+            name,
+        })
+    };
+
+    doAddEventAnimation(selectors, eventName, duration=1000){
+        const animFunc = ()=>{
+            $(selectors).each((i, el)=>{
+                el.emit(eventName)
+            })
+        }
+        this.timeline.add({
+            duration,
+            changeBegin: animFunc,
+        })
+    };
+
+
+    checkAnimations(){
+        this.animData.forEach()
+    };
+
+
+    doAddAnimation(name, offset=undefined){
         name = name.toLowerCase()
         let animationName = 'animation__' + name;
         let els = $( `[${animationName}]`)
@@ -235,7 +325,36 @@ export class Animation {
 
     }
 
-    addCaption(caption, offset=undefined, duration=200){
+    addCaption(caption, offset=undefined, duration=500){
+        if(this.animData==undefined){
+            this.animData = []
+        }
+        this.animData.push({
+            type: 'caption',
+            caption,
+            offset,
+            duration,
+        })
+
+    };
+
+    previousCaptionDuration(){
+        let preCap = undefined
+        for(let i=this.animData.length-1;i>=0;i--){
+            if(preCap==undefined){
+                let an = this.animData[i];
+                if(an.type=='caption'){
+                    preCap = an
+                }
+            }
+        }
+        if(preCap==undefined){
+            return -1
+        }
+        return captionDuration(preCap.caption)
+    };
+
+    doAddCaption(caption, offset=undefined, duration=200){
         let sound = undefined;
         let soundID = undefined;
         let src = `${this.homeDirName}/${this.soundDirName}/${caption}.mp3`
@@ -245,13 +364,15 @@ export class Animation {
             let id = `s-${this.soundIndex}`
             soundID = `s${id}`
             audioAss.attr('id', id)
-            $('#scene').append(`<a-entity id="${soundID}" sound="src: #${id};poolSize:3;"></a-entity>`)
+            $('#scene').append(`<a-entity id="${soundID}" sound="src: #${id};poolSize:3;positional:false;"></a-entity>`)
+        }else{
+            console.error('找不到:'+`[src="${src}"]`)
         }
         this.timeline.add({
             duration: duration,
             changeBegin:anim=>{
                 this.captionDiv.text(caption)
-                console.log('show caption.....')
+                console.log('show caption.....:' + caption)
                 this.captionDiv.removeClass('animate__rotateOut')
                 this.captionDiv.addClass('animate__flipInX')
                 if(soundID!=undefined){
@@ -266,161 +387,11 @@ export class Animation {
                 }else{
                     setTimeout(()=>{
                         this.captionDiv.removeClass('animate__flipInX')
-                    }, 1000*(1.2 + 0.211 * caption.length))
+                    }, captionDuration(caption))
                 }
             }
         }, offset)
     }
-
-    checkpoint(){
-        this.animations.push({name: "checkpoint"});
-        this.hasPlayed.push(false);
-    };
-
-    delaySec(){
-		this.checkpoint();
-		this.addAnimation(v => {});
-		this.checkpoint();
-    };
-
-
-    update(){
-        for(let i = 0; i < this.sprites.length; i++) {
-            this.sprites[i].lookAt(this.camera.position);
-            this.sprites[i].setRotationFromQuaternion(this.camera.quaternion, 0);
-        }
-        if(this.isControls)
-            this.timeContainer.innerText = this.sanitizeTime(this.curIndex) + " / " + this.sanitizeTime(this.countCheckpoints());
-
-        // console.log(this.isPlaying, this.curIndex, parseInt(this.countCheckpoints()));
-        if(this.curIndex === parseInt(this.countCheckpoints())) {
-            if(!this.download && this.capturer) {
-                this.capturer.save();
-                this.capturer.stop();
-                this.download = true;
-                return;
-            }
-        	if(this.autoReplay) {
-        		if(this.isControls) {
-                    this.playButton.attr('class', "bi bi-play-fill");
-                    this.seekbar.value = 0;
-                }
-				this.seek(0);
-			}
-        	else {
-				if (this.isPlaying)
-					for (let i in this.trackables)
-						this.stopTrackable(i);
-                if(this.isControls)
-				    this.playButton.attr('class', "bi bi-arrow-repeat");
-				this.pause();
-			}
-            return;
-        }
-        if(!this.isPlaying || this.start >= this.animations.length)
-            return;
-
-        if(this.animations[this.start].name === "hook") {
-        	let hook = this.hooks[this.animations[this.start].index];
-        	if(hook.condition() && !hook.now) {
-        		hook.now = true;
-        		hook.onSatisfied();
-        		if(hook.onDissatisfied === null) {
-        			this.start++;
-        			return;
-				}
-			}
-        	if(!hook.condition() && hook.now && hook.onDissatisfied) {
-        		hook.now = false;
-        		hook.onDissatisfied();
-			}
-
-        	return;
-		}
-
-        let played = false;
-        let fraction = 1;
-        if(this.isControls) {
-            for (let i = this.start; i < this.animations.length; i++) {
-                if (this.animations[i].name === "checkpoint" || this.animations[i].name === "delay")
-                    break;
-                if (this.animations[i].name !== "addTrackable" && this.animations[i].name !== "removeTrackable")
-                    fraction = Math.min(fraction, this.animations[i].fraction);
-            }
-            this.seekbar.setAttribute('value', (this.curIndex + fraction).toString());
-            this.seekbar.value = this.seekbar.getAttribute('value');
-        }
-        for (let i = this.start; i < this.animations.length; i++) {
-            if (this.animations[i].name === "checkpoint" && i !== 0 && this.animations[i - 1].name !== "checkpoint" && !played) {
-                this.curIndex++;
-                if(this.isControls) {
-                    this.seekbar.setAttribute('value', this.curIndex.toString());
-                    this.seekbar.value = this.seekbar.getAttribute('value');
-                }
-            }
-
-            let currentAnimation = this.animations[i];
-            if(currentAnimation.name === "addTrackable") {
-                if(!currentAnimation.isPlaying) {
-                    this.startTrackable(currentAnimation.index);
-                    currentAnimation.isPlaying = true;
-                }
-                continue;
-            }
-            else if(currentAnimation.name === "removeTrackable") {
-                if(!currentAnimation.isPlaying) {
-                    currentAnimation.isPlaying = true;
-                    this.stopTrackable(currentAnimation.index);
-                }
-                continue;
-            }
-
-            if (currentAnimation.name === "checkpoint") {
-                if (!played) {
-                    this.start = i + 1;
-                }
-                return;
-            }
-            if (currentAnimation.name === "delay") {
-                let aim = 70
-                if(currentAnimation.seconds){
-                    aim = currentAnimation.seconds * 70
-                }
-                if(this.delay >= aim)
-                {
-                    this.hasPlayed[i] = true;
-                    this.start = i + 1;
-                    this.delay = 0;
-                }
-                else this.delay++;
-                return;
-            }
-            if (!this.hasPlayed[i]) {
-                
-                if (currentAnimation.fraction >= 1) {
-                    this.hasPlayed[i] = true;
-                } else {
-                    let speed = currentAnimation.speed
-                    if(speed==undefined){
-                        speed = 1 / 59.0
-                    }
-                    played = true;
-                    currentAnimation.set(currentAnimation.fraction);
-                    currentAnimation.fraction += speed;
-                }
-            }
-        }
-    };
-
-
-    countCheckpoints = () => {
-        let ret = 0;
-        for(let i = 1;i < this.animations.length; i++) {
-            if(this.animations[i].name === "checkpoint" && this.animations[i-1].name !== "checkpoint")// && this.animations[i+1].name !== "hook")
-                ret++;
-        }
-        return ret.toString();
-    };
 
     seek = value => {
        this.timeline.seek(value)
@@ -453,8 +424,8 @@ export class Animation {
     };
 
     createSeekBar(){
-        this.seekbarContainer = $('.animation-bottom')
-        // $('body').append(this.seekbarContainer);
+        this.seekbarContainer = $('<div class="animation-bottom"></div>')
+        $('body').append(this.seekbarContainer);
         this.seekbar = $('<input type="range" min="0" max="1" value="0" step="0.0001" class="seekbar">')
         this.seekbarContainer.append(this.seekbar);
         this.seekbar.on('input', e => {
@@ -661,6 +632,139 @@ export class Animation {
         }, offset)
     }
 
+    get controls(){
+        return $('#camera')[0].components['orbit-controls']
+    }
+
+    setCamera(property, value, duration=200){
+        this.animData.push({
+            type: 'changeBegin',
+            func: ()=>{
+                let el = $('#camera')[0]
+                el.setAttribute('orbit-controls', property, value);
+            },
+            duration: duration,
+        })
+    }
+
+    camRotateTo(x, y, z, speed=undefined){
+        console.log('push data: rotate to')
+        this.animData.push({
+            type: 'changeBegin',
+            func: ()=>{
+                console.log('rotating to:' + `${x} ${y} ${z}`)
+                let el = $('#camera')[0]
+                if(speed!=undefined){
+                    el.setAttribute('orbit-controls', 'rotateToSpeed',  speed);
+                }
+                el.setAttribute('orbit-controls', 'rotateTo', `${x} ${y} ${z}`);
+            },
+            duration: 200,
+        })
+    }
+
+    camAutoRotate(auto, duration=undefined, speed=undefined){
+        this.animData.push({
+            type: 'changeBegin',
+            func: ()=>{
+                let el = $('#camera')[0]
+                if(speed!=undefined){
+                    el.setAttribute('orbit-controls', 'autoRotateSpeed', speed);
+                }
+                el.setAttribute('orbit-controls', 'autoRotate', auto);
+            },
+            duration: duration||200,
+        })
+    }
+
+    camAutoRotateSpeed(speed){
+        this.animData.push({
+            type: 'changeBegin',
+            func: ()=>{
+                let el = $('#camera')[0]
+                el.setAttribute('orbit-controls', 'autoRotateSpeed', speed);
+            },
+            duration: 200,
+        })
+    }
+
+    constructAnimations(anims){
+        let events = []
+        let duration = -1;
+        anims.forEach(an=>{
+            an.addEventAnimation = false;
+            this.constructAnimation(an)
+            events.push({
+                selectors: an.selectors,
+                startEvents: an.startEvents,
+                anmName: an.anmName || an.startEvents,
+            })
+            if(an.dur > duration)duration=an.dur;
+        })
+        this.animData.push({
+            type: 'eventAnimations',
+            events,
+            duration,
+        })
+    }
+
+    // constructAnimation(selectors, animData, anmName=undefined, duration=undefined, addEventAnimation=true){
+    constructAnimation(animData){
+        // animData keys:
+        // selectors: css選擇
+        // dur: animation的持續時間
+        // duration: timeline處罰event后的持續時間
+        // anmName: 动画名称,用于构建'animation__anmName'
+        // startEvents: 触发动画的事件
+        // addEventAnimation: default true; 是否添加动画到timeline
+        const selectors = animData.selectors;
+        const duration = animData.duration || animData.dur;
+        const anmName = animData.anmName || animData.startEvents;
+        if(animData.autoplay == undefined){
+            animData.autoplay = false
+        }
+        function data2string(){
+            
+            const keys = ['to', 'property', 'startEvents', ]
+            let animation = '';
+            keys.forEach(k=>{
+                if(animData[k]==undefined){
+                    throw new Error('缺少必须的数据:'+k)
+                }
+                animation += `${k}:${animData[k]};`
+            })
+            let alters = ['from', 'type', 'delay', 'dur', 'easing', 'elasticity', 'loop', 'enabled', 'autoplay']
+            alters.forEach(al=>{
+                if(animData[al]!=undefined){
+                    animation += `${al}:${animData[al]};`
+                }
+            })
+            console.log({animation})
+            return animation
+        }
+
+
+
+        $(selectors).attr(
+            `animation__${anmName}`,
+            data2string(),
+        )
+        console.log('constructAnimation.........:' + animData.startEvents)
+        if(animData.addEventAnimation != false){
+            this.addEventAnimation(selectors, animData.startEvents, duration, anmName)
+        }
+        
+
+    }
+
+    camPosition(x, y, z, dur, name, eventName=undefined){
+        if(eventName==undefined){
+            eventName = name;
+        }
+        let animName = `property:position;to:${x} ${y} ${z};dur:${dur};autoplay:false;startEvents:${eventName||name}`
+        $('#camera').attr('animation__${name}')
+        this.constructAnimation('#camera', 'faraway100', 'property:position.z;')
+    }
 
 
 }

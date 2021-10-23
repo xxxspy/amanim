@@ -14,6 +14,8 @@ AFRAME.registerComponent('distance', {
             type: 'number',
             default: 1,
         },
+        headWidth: {default: 0.05},
+        headLength: {default: 0.05},
 
     },
     init(){
@@ -28,8 +30,8 @@ AFRAME.registerComponent('distance', {
         direction.sub(start0)
         direction0.copy(direction)
         let color = this.data.color
-        let headLength = 0.1*this.data.scale
-        let headWidth = 0.1*this.data.scale
+        let headLength = this.data.headLength*this.data.scale
+        let headWidth = this.data.headWidth*this.data.scale
         let length = this.calLength(this.data.start, this.data.end)*this.data.scale;
         this.arrow1 = new THREE.ArrowHelper(direction.normalize(), mid, length, color, headLength, headWidth);
         this.arrow2 = new THREE.ArrowHelper(direction0.multiplyScalar(-1).normalize(), mid, length, color, headLength, headWidth);

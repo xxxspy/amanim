@@ -31,7 +31,6 @@ AFRAME.registerComponent("arrow", {
     },
 
     init() {
-        console.log('Arrow init..................')
         var data = this.data;
         var direction = new THREE.Vector3(data.direction.x, data.direction.y, data.direction.z);
         var length = data.length || direction.length();
@@ -41,7 +40,6 @@ AFRAME.registerComponent("arrow", {
         this.arrow = new THREE.ArrowHelper(direction.normalize(), new THREE.Vector3(), length, color, headLength, headWidth);
         // this.el.setObject3D("arrow", this.arrow);
         this.el.object3D.add(this.arrow)
-        console.log('Arrow id:::::::::::' + this.id)
     },
 
     update: function (oldData) {

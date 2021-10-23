@@ -65,3 +65,8 @@ export const COLOR = {
     GREEN_SCREEN: "#00FF00",
     ORANGE: "#FF862F",
 }
+
+export function randColor(){
+    let name = Object.keys(COLOR)[parseInt(Math.random()*57)];
+    return COLOR[name]
+}

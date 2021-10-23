@@ -13,6 +13,7 @@ const TemplateContent = `
   />
 
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three-text2d@0.6.0/dist/three-text2d.min.js"></script>
     <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.14/dist/aframe-orbit-controls-component.min.js"></script>
     <script src="https://supereggbert.github.io/aframe-htmlembed-component/dist/build.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/d3/7.0.0/d3.min.js"></script>
@@ -26,7 +27,7 @@ const TemplateContent = `
         };
     </script>
     <script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-    <script src="/example1.bundle.js" type="text/javascript" ></script>
+    <script src="/<ENTRY>.bundle.js" type="text/javascript" ></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 </head>
 
@@ -40,13 +41,10 @@ const TemplateContent = `
             id="target" 
             visible="false"
             color="yellow" 
-            radius="0.01" 
+            radius="0.1" 
             position="1.5 1.5 0"
         ></a-sphere>
         <a-sky src="sky.png"></a-sky>
-        
-
-        
         <a-entity
             id="camera"
             camera="fov: 80; zoom: 1;"
@@ -55,29 +53,23 @@ const TemplateContent = `
                 autoRotate: false;
                 target: #target;
                 enableDamping: true;
-                dampingFactor: 0.125;
-                rotateSpeed:90;
-                minDistance:2;
+                dampingFactor: 0.0125;
+                rotateToSpeed:0.001;
+                minDistance:1;
                 maxDistance:100;
                 "
             mouse-cursor=""
-            animation__rotoZ="property:orbit-controls.autoRotate;to:true;dur:30;autoplay:false;"
         >
             <a-entity geometry="primitive:cone; radius-bottom:1; radius-top:0" scale=".33 1 .33" position="0 0 0" rotation="90 0 0" material="color: #0099ff; transparent: true; opacity:0.5"></a-entity>
-            
         </a-entity>
-
-
     </a-scene>
-    <div class="animation-bottom"></div>
-    <div id="caption" class="caption animate__animated animate__rotateOut"></div>
-
 </body>
 </html>
 `
 
 const AssetsPlaceholder = '<ASSETS>'
 const TitlePlaceHolder = '<TITLE>'
+const EntryPlaceHolder = '<ENTRY>'
 
 const TemplateGener = function(options){
     if(options.assets != undefined){
@@ -85,8 +77,8 @@ const TemplateGener = function(options){
     }
     if(options.title != undefined){
         options.templateContent = options.templateContent.replace(TitlePlaceHolder, options.title)
-
     }
+    options.templateContent = options.templateContent.replace(EntryPlaceHolder, options.entry)
     return options
 }
 
@@ -109,7 +101,8 @@ function assetsFinder(exampleDirName){
 module.exports = {
     entry: {
         example1: './examples/01/index.js',
-        // example2: './examples/02/index.js',
+        example2: './examples/02/index.js',
+        playground: './examples/playground/index.js',
     },
     devServer: {
         static: {
@@ -144,16 +137,26 @@ module.exports = {
         new HtmlWebpackPlugin(TemplateGener({
             templateContent: TemplateContent,
             filename: 'example01.html',
-            chunks: ['example1'],
+            entry: 'example1',
             inject: false,
             title: '回归分析',
             assets: assetsFinder('01'),
         })),
-        // new HtmlWebpackPlugin({
-        //   // inject: false,
-        //   template: path.resolve(__dirname, "examples/02", "index.html"),
-        //   filename: 'example02.html',
-        //   chunks: ['example2'],
-        // }),
+        new HtmlWebpackPlugin(TemplateGener({
+            inject: false,
+            templateContent: TemplateContent,
+            filename: 'example02.html',
+            title: '均值回归',
+            entry: 'example2',
+            assets: assetsFinder('02'),
+        })),
+        new HtmlWebpackPlugin(TemplateGener({
+            inject: false,
+            templateContent: TemplateContent,
+            filename: 'playground.html',
+            title: '测试场地',
+            entry: 'playground',
+            assets: assetsFinder('playground'),
+        })),
     ]
 };
