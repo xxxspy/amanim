@@ -8,7 +8,9 @@ import '../../src/componets/mathjax'
 import {Animation} from '../../src/animation'
 
 
-
+const DirName = '01'
+const imgDir = 'imgs'
+const soundDir = 'sounds'
 
 
 
@@ -471,8 +473,8 @@ function animations(){
         '回归分析中你经常看到这样的表格,常量就是截距b0,从第二行开始就是自变量系数',
         '+=3000'
     )
-    anim.showImg('imgs/example01/coeffs.png', '30%', '50%', 10000)
-    anim.hideImg('imgs/example01/coeffs.png')
+    anim.showImg(`${DirName}/${imgDir}/coeffs.png`, '30%', '50%', 10000)
+    anim.hideImg(`${DirName}/${imgDir}/coeffs.png`)
     anim.addCaption('到此,我们介绍了回归线的一些属性', '+=2000')
     anim.addAnimation('clearFormula')
     anim.addCaption('但是要知道,目前的回归线是基于两个人的数据求得的', '+=2000')
@@ -484,12 +486,12 @@ function animations(){
     anim.addAnimation('moveFitLineY')
     anim.addCaption('比如你从班级里随机挑选一个男生,他的身高可能是1.8米,也可能是1.7米', 
     '+=8000')
-    anim.showImg('imgs/example01/height.jpg', '30%', '30%', 7000)
-    anim.hideImg('imgs/example01/height.jpg',)
+    anim.showImg(`${DirName}/${imgDir}/height.jpg`, '30%', '30%', 7000)
+    anim.hideImg(`${DirName}/${imgDir}/height.jpg`,)
     anim.addCaption('但是一个班级的平均身高基本上都在1.7左右,换一个班级平均身高也不会变化很大', 
     '+=3000')
-    anim.showImg('imgs/example01/heights.jpeg', '30%', '30%', 7000)
-    anim.hideImg('imgs/example01/heights.jpeg',)
+    anim.showImg(`${DirName}/${imgDir}/heights.jpeg`, '30%', '30%', 7000)
+    anim.hideImg(`${DirName}/${imgDir}/heights.jpeg`,)
     anim.addCaption('统计学家们不会这么愚蠢', '+=2000')
     anim.addAnimation('clearStag1a')
     anim.addAnimation('clearStag1b')
@@ -550,7 +552,7 @@ function animations(){
     anim.addCaption('实际上R平方就是这两个方差的比值',  '+=1000')
     anim.addAnimation('showR22')
 
-    anim.addCaption('但是R方为多少才能证明你的回归结果比较好?没有固定的标准', 
+    anim.addCaption('但是R方为多少才能证明你的回归结果比较好 没有固定的标准', 
         '+=2000')
     anim.addAnimation('r2standard')
     anim.addCaption('在心理学的某些研究中R方在百分之十左右就很常见', 
@@ -571,8 +573,8 @@ function animations(){
     anim.addAnimation('showZ')
     anim.addAnimation('rotoZ', '-=3000')
     anim.addCaption('以及各种中介和调节模型', '+=4000')
-    anim.showImg('imgs/example01/modmed.png', '30%', '10%', 3000)
-    anim.hideImg('imgs/example01/modmed.png')
+    anim.showImg(`${DirName}/${imgDir}/modmed.png`, '30%', '10%', 2000)
+    anim.hideImg(`${DirName}/${imgDir}/modmed.png`)
     anim.addCaption('希望大家点赞和关注','+=3000')
     anim.showEnding()
     anim.addAnimation('move_apoint')

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ECharts</title>
+    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.1/dist/echarts.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  </head>
+  <body>
+    <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+    <div id="main" style="width: 100vw;height:100vh;"></div>
+    <script type="text/javascript">
+var ROOT_PATH =
+  'https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/examples';
+
+    const Nodes = [ 
+                {id: 0, name: "F1", symbolSize: [80, 40], symbol: 'circle', fixed: [true, false], x: 500, y:500},
+                {id: 1, name: "q1", symbolSize: 40, symbol: 'rect', force: { gravity: 1,}},
+                {id: 2, name: "q2", symbolSize: 40, symbol: 'rect'},
+                {id: 3, name: "q3", symbolSize: 40, symbol: 'rect'},
+                {id: 4, name: "e1", symbolSize: 30, symbol: 'circle'},
+                {id: 5, name: "e2", symbolSize: 30, symbol: 'circle'},
+                {id: 6, name: "e3", symbolSize: 30, symbol: 'circle'},
+    ]
+    const Links = [ 
+        {target: 1, source: 0},
+        {target: 2, source: 0},
+        {target: 3, source: 0},
+        {source: 4, target: 1},
+        {source: 5, target: 2},
+        {source: 6, target: 3, value: 0.1},
+        {source: 1, target: 2},
+        {source: 2, target: 3},
+    ]
+var chartDom = document.getElementById('main');
+var myChart = echarts.init(chartDom);
+var option;
+
+myChart.showLoading();
+$.get(ROOT_PATH + '/data/asset/data/les-miserables.json', function (graph) {
+  console.log(graph);
+  myChart.hideLoading();
+  graph.nodes.forEach(function (node) {
+    node.symbolSize = 15;
+  });
+  option = {
+    title: {
+      text: 'SEM',
+      subtext: 'Default layout',
+      top: 'bottom',
+      left: 'right'
+    },
+    
+    tooltip: {},
+    legend: [
+      {
+        // selectedMode: 'single',
+        data: graph.categories.map(function (a) {
+          return a.name;
+        })
+      }
+    ],
+    series: [
+      {
+        name: 'Les Miserables',
+        draggable: true,
+        type: 'graph',
+        layout: 'force',
+        data: Nodes,
+        links: Links,
+        roam: true,
+        label: {
+          position: 'inside',
+          show: true,
+        },
+        force: {
+          repulsion: 400,
+          gravity: 0.05,
+          edgeLength: 100,
+        },
+        edgeSymbol: ['', 'arrow'],
+
+      }
+    ]
+  };
+  myChart.setOption(option);
+});
+
+option && myChart.setOption(option);
+
+
+
+    </script>
+  </body>
+</html>

@@ -108,6 +108,8 @@ export class Animation {
                                         changeBegin: an.func,
                                         duration: an.duration || 500,
                                     })
+                                }else if(an.type == 'img'){
+                                    this.doShowImg(an.url, an.left, an.ltop, an.dur, an.offset)
                                 }
                             })
                             this.seekbarContainer.show()
@@ -119,6 +121,8 @@ export class Animation {
             })
         })
     }
+
+
 
 
     construct_() {
@@ -223,6 +227,9 @@ export class Animation {
             this.animData = []
         }
         this.animData.push({
+            name, offset, type: 'animation'
+        })
+        console.log({
             name, offset, type: 'animation'
         })
     };
@@ -604,6 +611,17 @@ export class Animation {
     };
 
     showImg(url, left='50%', top='50%', dur=1000, offset=undefined){
+        this.animData.push({
+            type: 'img',
+            url,
+            left,
+            top,
+            dur,
+            offset,
+        })
+    }
+
+    doShowImg(url, left='50%', top='50%', dur=1000, offset=undefined){
         let img = $(`
         <img class="animate__animated" src="${url}" style="position:absolute;left:${left};top:${top};display:none">
     `)

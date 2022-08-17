@@ -67,6 +67,8 @@ const TemplateContent = `
 </html>
 `
 
+const ExampleHome = 'examples'
+
 const AssetsPlaceholder = '<ASSETS>'
 const TitlePlaceHolder = '<TITLE>'
 const EntryPlaceHolder = '<ENTRY>'
@@ -82,31 +84,68 @@ const TemplateGener = function(options){
     return options
 }
 
-function assetsFinder(exampleDirName){
+function assetsFinder(EXDirName){
     const ImgDirName = 'imgs'
     const soundDirName = 'sounds'
-    const imgDir = path.join(__dirname, 'examples', exampleDirName,  ImgDirName)
+    const imgDir = path.join(__dirname, ExampleHome, EXDirName,  ImgDirName)
     let assets = []
     fs.readdirSync(imgDir).forEach(file=>{
-        assets.push(`<img id="${ImgDirName}-${file.split('.')[0]}" src="${exampleDirName}/${ImgDirName}/${file}">`)
+        assets.push(`<img id="${ImgDirName}-${file.split('.')[0]}" src="${EXDirName}/${ImgDirName}/${file}">`)
     })
-    fs.readdirSync(path.join(__dirname, 'examples', exampleDirName, soundDirName)).forEach(file=>{
-        assets.push(`<audio id="" src="${exampleDirName}/${soundDirName}/${file}" preload="auto"></audio>`)
+    fs.readdirSync(path.join(__dirname, ExampleHome, EXDirName, soundDirName)).forEach(file=>{
+        assets.push(`<audio id="" src="${EXDirName}/${soundDirName}/${file}" preload="auto"></audio>`)
     })
     
     return assets.join('\n')
 }
 
+const entries = [ 
+    {
+        dir: '01',
+        title: '回归分析',
+    },
+    {
+        dir: '02',
+        title: '均值回归',
+    },
+    {
+        dir: 'playground',
+        title: '测试场地',
+    },
+]
+
+function genEntry(entries){
+    let rtn = {}
+    entries.forEach(en=>rtn[en.dir] = `./${ExampleHome}/${en.dir}/index.js`)
+    console.log(rtn)
+    return rtn
+}
+
+function genPlugins(entries){
+    let plugins = [new CopyPlugin({
+        patterns: [
+          { from: "src/statics", to: "statics" },
+        ],
+    }),]
+    entries.forEach(en=>{
+        plugins.push(new HtmlWebpackPlugin(TemplateGener({
+            templateContent: TemplateContent,
+            filename: `${en.dir}.html`,
+            entry: en.dir,
+            inject: false,
+            title: en.title,
+            assets: assetsFinder(en.dir),
+        })))
+    })
+    return plugins
+}
+
 
 module.exports = {
-    entry: {
-        example1: './examples/01/index.js',
-        example2: './examples/02/index.js',
-        playground: './examples/playground/index.js',
-    },
+    entry:  genEntry(entries),
     devServer: {
         static: {
-            directory: path.join(__dirname, 'examples'),
+            directory: path.join(__dirname, ExampleHome),
         },
 
     },
@@ -128,35 +167,5 @@ module.exports = {
         },
     ],
     },
-    plugins: [
-        new CopyPlugin({
-            patterns: [
-              { from: "src/statics", to: "statics" },
-            ],
-        }),
-        new HtmlWebpackPlugin(TemplateGener({
-            templateContent: TemplateContent,
-            filename: 'example01.html',
-            entry: 'example1',
-            inject: false,
-            title: '回归分析',
-            assets: assetsFinder('01'),
-        })),
-        new HtmlWebpackPlugin(TemplateGener({
-            inject: false,
-            templateContent: TemplateContent,
-            filename: 'example02.html',
-            title: '均值回归',
-            entry: 'example2',
-            assets: assetsFinder('02'),
-        })),
-        new HtmlWebpackPlugin(TemplateGener({
-            inject: false,
-            templateContent: TemplateContent,
-            filename: 'playground.html',
-            title: '测试场地',
-            entry: 'playground',
-            assets: assetsFinder('playground'),
-        })),
-    ]
+    plugins: genPlugins(entries)
 };
