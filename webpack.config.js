@@ -6,7 +6,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const TemplateContent = `
 <html>
 <head>
-    <title><TITLE></title>
+    <title><TITLE> | 动画</title>
     <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"

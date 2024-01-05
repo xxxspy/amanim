@@ -3,6 +3,16 @@ import './style.css'
 import {checkElement, checkVariable, checkAnimation, captionDuration} from './utils'
 
 
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
 
 // window.MathJax.Hub.Config({
 //     jax: ["input/TeX", "output/HTML-CSS"],
@@ -171,6 +181,9 @@ export class Animation {
             }
         }})
         this.createSeekBar()
+        if(this.animData==undefined){
+            this.animData = []
+        }
 
     };
 
@@ -337,6 +350,12 @@ export class Animation {
             this.animData = []
         }
         this.animData.push({
+            type: 'caption',
+            caption,
+            offset,
+            duration,
+        })
+        console.log({
             type: 'caption',
             caption,
             offset,
@@ -670,7 +689,7 @@ export class Animation {
         this.animData.push({
             type: 'changeBegin',
             func: ()=>{
-                console.log('rotating to:' + `${x} ${y} ${z}`)
+                console.log('camera rotating to:' + `${x} ${y} ${z}`)
                 let el = $('#camera')[0]
                 if(speed!=undefined){
                     el.setAttribute('orbit-controls', 'rotateToSpeed',  speed);
@@ -711,11 +730,11 @@ export class Animation {
         let duration = -1;
         anims.forEach(an=>{
             an.addEventAnimation = false;
-            this.constructAnimation(an)
+            let anmName = this.constructAnimation(an)
             events.push({
                 selectors: an.selectors,
                 startEvents: an.startEvents,
-                anmName: an.anmName || an.startEvents,
+                anmName: anmName,
             })
             if(an.dur > duration)duration=an.dur;
         })
@@ -737,7 +756,7 @@ export class Animation {
         // addEventAnimation: default true; 是否添加动画到timeline
         const selectors = animData.selectors;
         const duration = animData.duration || animData.dur;
-        const anmName = animData.anmName || animData.startEvents;
+        const anmName = animData.anmName || animData.startEvents + makeid(4);
         if(animData.autoplay == undefined){
             animData.autoplay = false
         }
@@ -747,7 +766,8 @@ export class Animation {
             let animation = '';
             keys.forEach(k=>{
                 if(animData[k]==undefined){
-                    throw new Error('缺少必须的数据:'+k)
+                    console.log(animData)
+                    throw new Error(`${anmName} 缺少必须的数据:${k}`)
                 }
                 animation += `${k}:${animData[k]};`
             })
@@ -772,7 +792,7 @@ export class Animation {
             this.addEventAnimation(selectors, animData.startEvents, duration, anmName)
         }
         
-
+        return anmName
     }
 
     camPosition(x, y, z, dur, name, eventName=undefined){
